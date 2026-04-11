@@ -182,9 +182,9 @@ function appendStream(token) {
 /* ── Profiles bar ───────────────────────────────────────────────────────── */
 function showProfilesBar(origin, dest) {
   document.getElementById('profiles-bar').innerHTML = `
-    <div class="profile-chip">You: <strong>${esc(origin.name)}</strong></div>
+    <div class="profile-chip">Sender: <strong>${esc(origin.name)}</strong></div>
     <span class="sep">→</span>
-    <div class="profile-chip">Them: <strong>${esc(dest.name)}</strong></div>
+    <div class="profile-chip">Recipient: <strong>${esc(dest.name)}</strong></div>
   `;
 }
 
