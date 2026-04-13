@@ -8,7 +8,14 @@
       "Bash(curl -s http://localhost:8765/api/models)",
       "Bash(curl -s http://localhost:8765/)",
       "Bash(pkill -f \"uvicorn main:app\")",
-      "Bash(curl -s http://localhost:8765/api/session)"
+      "Bash(curl -s http://localhost:8765/api/session)",
+      "Bash(python3 -c \"import scraper, analyzer; print\\('imports OK'\\)\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python3:*)",
+      "Read(//private/tmp/claude-501/-Users-noashavit-Claude-Code-LI_Insights/815b9c8f-efb3-4c8a-af85-0f4d4c360cbe/tasks/**)",
+      "Read(//private/tmp/claude-501/**)",
+      "Bash(ls /Users/noashavit/Claude_Code/LI_Insights/*.png /Users/noashavit/Claude_Code/LI_Insights/*.jpg /Users/noashavit/Claude_Code/LI_Insights/*.jpeg /Users/noashavit/Claude_Code/LI_Insights/*.webp)",
+      "Bash(curl:*)"
     ]
   }
 }

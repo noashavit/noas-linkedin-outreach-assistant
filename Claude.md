@@ -17,7 +17,7 @@ LinkedIn Outreach Assistant — a tool that scrapes two LinkedIn profiles (origi
 1. Accept two LinkedIn public profile URLs (origin and destination).
 2. Scrape each profile page and `/recent-activity/all/` via Playwright.
 3. Extract metadata from `<title>` and `<meta>` tags: name, current employer, past employers, description, skills, groups.
-4. Detect co-worker relationships (same employer, current or past) and inject a prominent alert into the analysis prompt. If the users are currently working at the same company outreach should not be about sales or business pushing, but about connecting as people. 
+4. Detect co-worker relationships (same employer, current or past) and inject a prominent alert into the analysis prompt. If the origin and desitination profiles are currently working at the same company outreach should focus on human connections and meeting each other. 
 5. Detect cross-engagement: did they like each other's posts, or comment on the same content? Surface this explicitly.
 6. Pass all scraped data to a local Ollama model.
 7. Output in this order: tone analysis → destination insights → connection points → outreach strategy → 5 LinkedIn drafts → 5 email drafts.

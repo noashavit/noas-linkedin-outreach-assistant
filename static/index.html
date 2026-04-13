@@ -11,10 +11,10 @@
   <header>
     <div class="header-inner">
       <div class="header-top">
-        <div>
-          <div class="wordmark">LinkedIn Outreach</div>
-          <p class="tagline">Get insights and personalized outreach in your voice of any LinkedIn profile.</p>
-          <p class="tagline">Input two LinkedIn profiles and get a detailed analysis of their tone, interests, and connection points, along with personalized message drafts for both LinkedIn and email outreach.</p>
+        <div class="wordmark">
+          <img src="logo.png" class="wordmark-icon" alt=""
+               onerror="this.style.display='none'" />
+          LinkedIn Assistant
         </div>
         <div id="session-badge" class="session-badge" onclick="handleSessionClick()">
           <span id="session-dot" class="session-dot"></span>
@@ -26,18 +26,24 @@
 
   <main>
 
+    <!-- Tagline — outside header, above input form -->
+    <div class="tagline-block">
+      <p class="tagline-main">Get insights and personalized outreach in the voice of any LinkedIn profile.</p>
+      <p class="tagline-sub">Input two LinkedIn profiles and get a detailed analysis of interests and connection points, along with personalized message drafts for outreach in the tone of the Sender profile.</p>
+    </div>
+
     <!-- Input form -->
     <section class="card form-card">
       <div class="form-row">
         <div class="field">
-          <label for="origin-url">Outreacher's LinkedIn profile</label>
+          <label for="origin-url">Sender's LinkedIn profile</label>
           <input id="origin-url" type="url"
-                 placeholder="https://linkedin.com/in/yourname" />
+                 placeholder="https://linkedin.com/in/sender-name" />
         </div>
         <div class="field">
           <label for="dest-url">Target's LinkedIn profile</label>
           <input id="dest-url" type="url"
-                 placeholder="https://linkedin.com/in/theirname" />
+                 placeholder="https://linkedin.com/in/target-name" />
         </div>
       </div>
       <div class="form-footer">
@@ -47,15 +53,47 @@
             <option value="">Loading models…</option>
           </select>
         </div>
-        <button id="analyze-btn" onclick="startAnalysis()">
-          Analyze <span class="arrow">→</span>
-        </button>
+        <div class="btn-field">
+          <label class="btn-spacer">&nbsp;</label>
+          <button id="analyze-btn" onclick="startAnalysis()">
+            Analyze <span class="arrow">→</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- Status log -->
-    <section id="status-section" class="hidden">
-      <div id="status-log" class="status-log"></div>
+    <!-- Progress bar -->
+    <section id="progress-section" class="hidden">
+      <div class="progress-card card">
+        <div class="progress-steps">
+          <div class="progress-step" id="step-1">
+            <div class="step-dot"></div>
+            <div class="step-info">
+              <span class="step-label">Scanning your profile</span>
+              <span class="step-detail" id="step-1-detail"></span>
+            </div>
+          </div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" id="step-2">
+            <div class="step-dot"></div>
+            <div class="step-info">
+              <span class="step-label">Scanning their profile</span>
+              <span class="step-detail" id="step-2-detail"></span>
+            </div>
+          </div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" id="step-3">
+            <div class="step-dot"></div>
+            <div class="step-info">
+              <span class="step-label">Analyzing</span>
+              <span class="step-detail" id="step-3-detail"></span>
+            </div>
+          </div>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+      </div>
     </section>
 
     <!-- Live stream area (shown while generating) -->
@@ -80,8 +118,12 @@
           <div class="card-body" id="tone-body"></div>
         </div>
         <div class="card insight-card" id="card-insights">
-          <h3 class="card-label">Target Insights</h3>
+          <h3 class="card-label">Destination Insights</h3>
           <div class="card-body" id="insights-body"></div>
+        </div>
+        <div class="card insight-card span-2 overlap-card" id="card-overlap">
+          <h3 class="card-label">Overlap</h3>
+          <div class="card-body" id="overlap-body"></div>
         </div>
         <div class="card insight-card span-2" id="card-connections">
           <h3 class="card-label">Connection Points</h3>
@@ -94,20 +136,20 @@
       </div>
 
       <div class="drafts-section">
+        </br>
         <h2 class="drafts-heading">LinkedIn Drafts</h2>
         <div id="linkedin-drafts" class="drafts-list"></div>
       </div>
 
       <div class="drafts-section">
+        </br>
         <h2 class="drafts-heading">Email Drafts</h2>
         <div id="email-drafts" class="drafts-list"></div>
       </div>
 
-      </div>
-        <p class="tagline">Made with ❤️ by <a href="https://www.linkedin.com/in/noashavit" target="_blank">Noa Shavit</a></p>
-      </div>
-      
-      </section>
+      <p class="footer-credit">Made with ❤️ by <a href="https://www.linkedin.com/in/noashavit" target="_blank">Noa Shavit</a></p>
+
+    </section>
   </main>
 
   <script src="app.js"></script>

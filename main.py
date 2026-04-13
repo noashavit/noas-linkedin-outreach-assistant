@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from scraper import scrape_profile, save_session, session_exists
+from scraper import scrape_profile, save_session, session_exists, get_logged_in_url
 from analyzer import build_prompt
 
 app = FastAPI(title="LinkedIn Outreach Assistant")
@@ -14,6 +14,13 @@ app = FastAPI(title="LinkedIn Outreach Assistant")
 @app.get("/api/session")
 async def get_session():
     return {"connected": session_exists()}
+
+
+@app.get("/api/me")
+async def get_me():
+    """Return the LinkedIn profile URL of the logged-in user."""
+    url = await get_logged_in_url()
+    return {"url": url}
 
 
 @app.post("/api/login")
@@ -53,16 +60,16 @@ async def analyze(req: AnalyzeRequest):
 
         try:
             # ── Scrape origin ──────────────────────────────────────────────
-            yield event({"type": "status", "message": "Scraping your profile…"})
+            yield event({"type": "status", "message": "Scanning your profile…", "step": 1})
             origin = await scrape_profile(req.origin_url)
             if origin.get("error"):
-                yield event({"type": "status", "message": f"⚠️  {origin['error']}"})
+                yield event({"type": "status", "message": f"⚠️  {origin['error']}", "step": 1})
 
             # ── Scrape destination ─────────────────────────────────────────
-            yield event({"type": "status", "message": "Scraping their profile…"})
+            yield event({"type": "status", "message": "Scanning their profile…", "step": 2})
             dest = await scrape_profile(req.destination_url)
             if dest.get("error"):
-                yield event({"type": "status", "message": f"⚠️  {dest['error']}"})
+                yield event({"type": "status", "message": f"⚠️  {dest['error']}", "step": 2})
 
             # Send names back so the UI can show who we found
             yield event({
@@ -78,7 +85,7 @@ async def analyze(req: AnalyzeRequest):
             })
 
             # ── Analyze ────────────────────────────────────────────────────
-            yield event({"type": "status", "message": f"Analyzing with {req.model}…"})
+            yield event({"type": "status", "message": f"Analyzing with {req.model}…", "step": 3})
 
             prompt = build_prompt(origin, dest)
 

@@ -26,7 +26,7 @@ body {
 /* ── Header ────────────────────────────────────────────────────────────── */
 header {
   background: var(--navy);
-  padding: 1.5rem 0;
+  padding: 1rem 0;
 }
 .header-inner {
   max-width: 880px;
@@ -35,21 +35,44 @@ header {
 }
 .header-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
 .wordmark {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: .04em;
   text-transform: uppercase;
 }
-.tagline {
-  color: rgba(255,255,255,.5);
-  font-size: .82rem;
-  margin-top: .2rem;
+.wordmark-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+}
+
+/* ── Tagline block (below header, above form) ──────────────────────────── */
+.tagline-block {
+  padding: .25rem 0 .25rem;
+}
+.tagline-main {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .35rem;
+}
+.tagline-sub {
+  font-size: .85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 680px;
 }
 
 /* Session badge */
@@ -104,12 +127,18 @@ main {
 /* ── Form ──────────────────────────────────────────────────────────────── */
 .form-card { padding: 1.5rem; }
 
-.form-row {
+/* All rows use the same 2-column grid so everything lines up */
+.form-row,
+.form-footer {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1rem;
   margin-bottom: 1rem;
 }
+.form-footer { margin-bottom: 0; align-items: end; }
+
+/* Button spans only its natural width, anchored to the right column */
+.form-footer .model-field { /* already a grid child, takes its column */ }
 
 .field label {
   display: block;
@@ -140,16 +169,23 @@ main {
   border-color: var(--blue);
 }
 
-.form-footer {
+.model-field { /* takes one grid column naturally */ }
+
+.btn-field {
   display: flex;
-  align-items: flex-end;
-  gap: .875rem;
+  flex-direction: column;
 }
-.model-field { flex: 1; }
+.btn-spacer {
+  display: block;
+  font-size: .72rem;
+  margin-bottom: .4rem;
+  visibility: hidden; /* same height as other labels, keeps baseline aligned */
+}
 
 #analyze-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: .4rem;
   background: var(--blue);
   color: #fff;
@@ -161,6 +197,7 @@ main {
   cursor: pointer;
   transition: background .15s, transform .1s;
   height: 38px;
+  width: 100%;
   white-space: nowrap;
 }
 #analyze-btn:hover:not(:disabled) { background: var(--blue-hover); }
@@ -168,7 +205,124 @@ main {
 #analyze-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
 .arrow { font-size: .95rem; }
 
-/* ── Status log ────────────────────────────────────────────────────────── */
+/* ── Progress bar ──────────────────────────────────────────────────────── */
+.progress-card {
+  padding: 1.25rem 1.5rem 1rem;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex: 1;
+}
+
+.progress-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin: 0 .5rem;
+  transition: background .4s;
+}
+.progress-connector.done { background: var(--blue); }
+
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .3s, background .3s;
+  position: relative;
+}
+/* Idle (waiting) */
+.progress-step.waiting .step-dot {
+  border-color: var(--border);
+}
+/* Active (spinning) */
+.progress-step.active .step-dot {
+  border-color: var(--blue);
+  border-top-color: transparent;
+  animation: spin .8s linear infinite;
+}
+/* Done (checkmark) */
+.progress-step.done .step-dot {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+.progress-step.done .step-dot::after {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+/* Error */
+.progress-step.error .step-dot {
+  border-color: #f87171;
+  background: #f87171;
+}
+.progress-step.error .step-dot::after {
+  content: '!';
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.step-info {
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  min-width: 0;
+}
+.step-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.progress-step.waiting .step-label { color: var(--muted); }
+.step-detail {
+  font-size: .7rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.progress-bar-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--blue);
+  border-radius: 4px;
+  transition: width .5s ease;
+}
+
+/* ── Status log (kept for fallback) ────────────────────────────────────── */
 .status-log {
   background: var(--navy);
   border-radius: var(--radius);
@@ -240,7 +394,7 @@ main {
 /* ── Insights grid ─────────────────────────────────────────────────────── */
 .insights-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1rem;
 }
 .span-2 { grid-column: 1 / -1; }
@@ -250,6 +404,8 @@ main {
   opacity: 0;
   transform: translateY(10px);
   transition: opacity .35s ease, transform .35s ease;
+  min-width: 0;
+  overflow: hidden;
 }
 .insight-card.visible {
   opacity: 1;
@@ -265,11 +421,20 @@ main {
   border-bottom: 1px solid var(--border);
   margin-bottom: .75rem;
 }
+
+/* Overlap card gets a subtle highlight when it has content */
+.overlap-card.visible {
+  border-left: 3px solid var(--blue);
+}
+.overlap-card .card-label { color: var(--blue); }
 .card-body {
   font-size: .855rem;
   color: #374151;
   line-height: 1.75;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 }
 
 /* ── Drafts ────────────────────────────────────────────────────────────── */
@@ -313,6 +478,7 @@ main {
   font-size: .855rem;
   color: #374151;
   line-height: 1.7;
+  white-space: pre-wrap;
 }
 .email-subject {
   display: block;
@@ -338,13 +504,33 @@ main {
 .copy-btn:hover { border-color: var(--blue); color: var(--blue); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); }
 
+/* ── Post links inside card bodies ─────────────────────────────────────── */
+.card-body a.post-link {
+  color: var(--blue);
+  text-decoration: none;
+  font-size: .78rem;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: border-color .15s;
+}
+.card-body a.post-link:hover { border-bottom-color: var(--blue); }
+
+/* ── Footer credit ─────────────────────────────────────────────────────── */
+.footer-credit {
+  text-align: center;
+  font-size: .78rem;
+  color: var(--muted);
+  padding: 1rem 0 .5rem;
+}
+.footer-credit a { color: var(--blue); text-decoration: none; }
+.footer-credit a:hover { text-decoration: underline; }
+
 /* ── Utilities ─────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
 @media (max-width: 600px) {
-  .form-row       { grid-template-columns: 1fr; }
+  .form-row,
+  .form-footer    { grid-template-columns: 1fr; }
   .insights-grid  { grid-template-columns: 1fr; }
   .span-2         { grid-column: unset; }
-  .form-footer    { flex-direction: column; align-items: stretch; }
-  #analyze-btn    { justify-content: center; }
 }
