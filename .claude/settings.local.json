@@ -19,7 +19,8 @@
       "Bash(git rm *)",
       "Bash(/Users/noashavit/Library/Python/3.9/bin/git-filter-repo --path session.json --invert-paths --force)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(kill 51867)"
     ]
   }
 }
