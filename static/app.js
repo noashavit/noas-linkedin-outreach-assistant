@@ -4,7 +4,6 @@ let fullText = '';
 /* ── Boot ───────────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   loadModels();
-  checkSession();
   prefillSender();
 });
 
@@ -29,35 +28,25 @@ async function loadModels() {
   }
 }
 
-/* ── Pre-fill sender URL from logged-in session ─────────────────────────── */
+/* ── Pre-fill sender URL and check session validity ─────────────────────── */
 async function prefillSender() {
   const input = document.getElementById('origin-url');
-  if (input.value) return; // don't overwrite if already typed
+  const dot   = document.getElementById('session-dot');
+  const label = document.getElementById('session-label');
+
   try {
     const res  = await fetch('/api/me');
     const data = await res.json();
-    if (data.url) input.value = data.url;
-  } catch {
-    // silently ignore — user can type it manually
-  }
-}
-
-/* ── Session ────────────────────────────────────────────────────────────── */
-async function checkSession() {
-  const dot   = document.getElementById('session-dot');
-  const label = document.getElementById('session-label');
-  try {
-    const res  = await fetch('/api/session');
-    const data = await res.json();
     if (data.connected) {
-      dot.className   = 'session-dot connected';
+      dot.className     = 'session-dot connected';
       label.textContent = 'LinkedIn connected';
+      if (data.url && !input.value) input.value = data.url;
     } else {
-      dot.className   = 'session-dot disconnected';
+      dot.className     = 'session-dot disconnected';
       label.textContent = 'Connect LinkedIn';
     }
   } catch {
-    dot.className   = 'session-dot disconnected';
+    dot.className     = 'session-dot disconnected';
     label.textContent = 'Connect LinkedIn';
   }
 }

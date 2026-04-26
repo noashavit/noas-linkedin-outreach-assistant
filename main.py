@@ -5,22 +5,17 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from scraper import scrape_profile, save_session, session_exists, get_logged_in_url
+from scraper import scrape_profile, save_session, get_logged_in_url
 from analyzer import build_prompt
 
 app = FastAPI(title="LinkedIn Outreach Assistant")
 
 
-@app.get("/api/session")
-async def get_session():
-    return {"connected": session_exists()}
-
-
 @app.get("/api/me")
 async def get_me():
-    """Return the LinkedIn profile URL of the logged-in user."""
+    """Return the logged-in user's LinkedIn URL and whether the session is valid."""
     url = await get_logged_in_url()
-    return {"url": url}
+    return {"url": url, "connected": url is not None}
 
 
 @app.post("/api/login")
@@ -30,7 +25,7 @@ async def login():
         await save_session()
         return {"status": "ok"}
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.get("/api/models")
@@ -43,7 +38,7 @@ async def get_models():
             models = [m["name"] for m in data.get("models", [])]
             return {"models": models}
     except Exception as exc:
-        raise HTTPException(status_code=503, detail=f"Cannot reach Ollama: {exc}")
+        raise HTTPException(status_code=503, detail=f"Cannot reach Ollama: {exc}") from exc
 
 
 class AnalyzeRequest(BaseModel):
@@ -97,7 +92,7 @@ async def analyze(req: AnalyzeRequest):
                         "model": req.model,
                         "prompt": prompt,
                         "stream": True,
-                        "options": {"temperature": 0.7, "num_predict": 4096},
+                        "options": {"temperature": 0.7, "num_predict": 8192},
                     },
                 ) as response:
                     async for line in response.aiter_lines():
