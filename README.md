@@ -56,10 +56,6 @@ playwright install chromium
 
 Download Ollama from [ollama.com](https://ollama.com), then pull a model:
 
-```bash
-ollama pull gemma3:4b
-```
-
 Any model available in Ollama will work. Larger models (8B+) produce noticeably better output and hallucinate less.
 
 ### 5. Log in to LinkedIn

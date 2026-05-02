@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   prefillSender();
 });
 
-const DEFAULT_MODEL = 'gemma3:4b';
+const DEFAULT_MODEL = 'gemma4:e4b';
 
 async function loadModels() {
   const sel = document.getElementById('model-select');
