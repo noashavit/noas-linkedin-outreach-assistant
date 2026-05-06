@@ -1,4 +1,5 @@
 import json
+import pathlib
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -7,6 +8,9 @@ from pydantic import BaseModel
 
 from scraper import scrape_profile, save_session, get_logged_in_url
 from analyzer import build_prompt
+
+_STYLE_RULES_PATH = pathlib.Path(__file__).parent / 'style_rules.txt'
+_STYLE_RULES = _STYLE_RULES_PATH.read_text() if _STYLE_RULES_PATH.exists() else ''
 
 app = FastAPI(title="LinkedIn Outreach Assistant")
 
@@ -85,15 +89,19 @@ async def analyze(req: AnalyzeRequest):
             prompt = build_prompt(origin, dest)
 
             async with httpx.AsyncClient(timeout=300.0) as client:
+                ollama_payload: dict = {
+                    "model": req.model,
+                    "prompt": prompt,
+                    "stream": True,
+                    "options": {"temperature": 0.7, "num_predict": 8192},
+                }
+                if _STYLE_RULES:
+                    ollama_payload["system"] = _STYLE_RULES
+
                 async with client.stream(
                     "POST",
                     "http://localhost:11434/api/generate",
-                    json={
-                        "model": req.model,
-                        "prompt": prompt,
-                        "stream": True,
-                        "options": {"temperature": 0.7, "num_predict": 8192},
-                    },
+                    json=ollama_payload,
                 ) as response:
                     async for line in response.aiter_lines():
                         if not line.strip():

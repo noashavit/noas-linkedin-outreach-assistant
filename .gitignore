@@ -1,6 +1,9 @@
 # LinkedIn session — contains live auth cookies, never commit
 session.json
 
+# Writing style rules — personal voice guide, not for public repos
+style_rules.txt
+
 # macOS metadata
 .DS_Store
 

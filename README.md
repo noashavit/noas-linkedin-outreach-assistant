@@ -87,14 +87,43 @@ Results stream in live and are organized into cards: tone analysis, destination 
 
 ---
 
+## Voice style guide (optional)
+
+Create a `style_rules.txt` file in the project root to control how the LLM writes your drafts. The file is passed to Ollama as a system prompt, so any rules you put in it apply to every LinkedIn note and email the app generates.
+
+The app works without it. If the file exists, it loads automatically — no other configuration needed.
+
+Example content:
+
+```
+PUNCTUATION
+- No em dashes. Use commas, periods, colons, or parentheses instead.
+
+BANNED WORDS: leverage, seamless, synergy, innovative, game-changer, transformative, cutting-edge
+
+BANNED TRANSITIONS: Furthermore, Additionally, Moreover, That said, With that in mind
+
+NEGATIVE PARALLELISM BAN:
+Never write "This isn't X. This is Y." Say Y directly.
+
+STRUCTURE
+- Short paragraphs. 1-2 sentences by default.
+- Specific beats vague: use real numbers, names, dates.
+```
+
+`style_rules.txt` is gitignored — it stays local and is never committed.
+
+---
+
 ## Project structure
 
 ```
 li-insights/
-├── main.py          # FastAPI server, SSE streaming endpoint
-├── scraper.py       # Playwright scraping logic
-├── analyzer.py      # Prompt construction
+├── main.py           # FastAPI server, SSE streaming endpoint
+├── scraper.py        # Playwright scraping logic
+├── analyzer.py       # Prompt construction
 ├── requirements.txt
+├── style_rules.txt   # optional — voice and style rules passed to Ollama (gitignored)
 └── static/
     ├── index.html
     ├── app.js
